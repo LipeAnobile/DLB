@@ -19,8 +19,7 @@
             --accent-green: #1db954; /* Verde Spotify */
             --text-main: #ffffff;
             --text-dim: #a1a1aa;
-            --transition-slow: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-            --transition-fast: all 0.3s ease;
+            --transition-smooth: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
@@ -36,15 +35,13 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             cursor: none; /* Cursor personalizado */
+            scroll-behavior: smooth;
         }
 
         /* --- Rastros de Luz Ambiente --- */
         .ambient-lights {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 1;
             overflow: hidden;
@@ -53,104 +50,48 @@
 
         .light-blob {
             position: absolute;
-            width: 45vw;
-            height: 45vw;
+            width: 50vw;
+            height: 50vw;
             border-radius: 50%;
-            filter: blur(140px);
+            filter: blur(150px);
             opacity: 0.3;
             mix-blend-mode: screen;
+            will-change: transform;
         }
 
-        .light-1 {
-            background: var(--accent-purple);
-            top: -10%;
-            left: -10%;
-            animation: drift 25s infinite alternate ease-in-out;
-        }
-
-        .light-2 {
-            background: var(--accent-blue);
-            bottom: -10%;
-            right: -10%;
-            animation: drift 30s infinite alternate-reverse ease-in-out;
-        }
-
-        .light-3 {
-            background: #ff00c1;
-            top: 40%;
-            left: 50%;
-            width: 35vw;
-            height: 35vw;
-            animation: drift 20s infinite alternate ease-in-out;
-            opacity: 0.15;
-        }
+        .light-1 { background: var(--accent-purple); top: -10%; left: -10%; animation: drift 25s infinite alternate ease-in-out; }
+        .light-2 { background: var(--accent-blue); bottom: -10%; right: -10%; animation: drift 30s infinite alternate-reverse ease-in-out; }
+        .light-3 { background: #ff00c1; top: 40%; left: 50%; width: 35vw; height: 35vw; animation: drift 20s infinite alternate ease-in-out; opacity: 0.15; }
 
         @keyframes drift {
             0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(12vw, 8vh) scale(1.15); }
-            100% { transform: translate(-8vw, 18vh) scale(0.9); }
+            50% { transform: translate(10vw, 5vh) scale(1.1); }
+            100% { transform: translate(-5vw, 10vh) scale(0.9); }
         }
 
-        /* --- Cursor Personalizado --- */
-        #cursor {
-            width: 20px;
-            height: 20px;
-            background: var(--text-main);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: difference;
-            transition: transform 0.1s ease;
-        }
+        /* --- Cursor e Sobreposição --- */
+        #cursor { width: 20px; height: 20px; background: white; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; }
+        #cursor-follower { width: 40px; height: 40px; border: 1px solid var(--accent-purple); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; opacity: 0.5; }
+        .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://grainy-gradients.vercel.app/noise.svg'); opacity: 0.04; pointer-events: none; z-index: 9000; }
 
-        #cursor-follower {
-            width: 40px;
-            height: 40px;
-            border: 1px solid var(--accent-purple);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9998;
-            transition: transform 0.15s ease, opacity 0.3s ease;
-            opacity: 0.5;
-        }
-
-        /* --- Sobreposição de Grão (Noise) --- */
-        .noise {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.05;
-            pointer-events: none;
-            z-index: 9000;
-        }
-
-        /* --- Layout --- */
+        /* --- Layout das Seções --- */
         section {
-            padding: 100px 20px;
+            padding: 160px 24px;
             max-width: 1200px;
             margin: 0 auto;
             position: relative;
             z-index: 2;
-        }
-
-        .full-width {
-            max-width: none;
-            width: 100%;
-        }
-
-        /* --- Tipografia --- */
-        h1, h2, h3 {
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 900;
+            min-height: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
         }
 
         .reveal {
             opacity: 0;
-            transform: translateY(30px);
-            transition: var(--transition-slow);
+            transform: translateY(40px);
+            transition: var(--transition-smooth);
         }
 
         .reveal.active {
@@ -161,13 +102,9 @@
         /* --- SEÇÃO HERO --- */
         #hero {
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            overflow: hidden;
+            padding: 0;
             background: radial-gradient(circle at 50% 50%, #151515 0%, #050505 100%);
+            max-width: none;
         }
 
         #hero video {
@@ -178,402 +115,323 @@
             object-fit: cover;
             opacity: 0.25;
             z-index: -1;
-            filter: blur(2px) brightness(0.8);
+            filter: blur(3px) brightness(0.6);
         }
 
         .hero-content {
-            z-index: 10;
-            position: relative;
+            will-change: transform, opacity;
         }
 
-        /* --- EFEITO GLITCH --- */
         .main-title {
-            font-size: clamp(3rem, 12vw, 9rem);
-            margin-bottom: 0px;
+            font-size: clamp(3rem, 15vw, 10rem);
             line-height: 0.85;
             position: relative;
-            color: white;
+            font-weight: 900;
         }
 
-        .main-title::before,
-        .main-title::after {
+        .main-title::before, .main-title::after {
             content: "DONT\000A LOOK\000A BACK";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            white-space: pre;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; white-space: pre; opacity: 0.6;
+        }
+        .main-title::before { color: #ff00c1; animation: glitch-lite 4s infinite; left: 2px; }
+        .main-title::after { color: var(--accent-blue); animation: glitch-lite 4s infinite reverse; left: -2px; }
+
+        @keyframes glitch-lite {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            5% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, 1px); }
+            10% { clip-path: inset(70% 0 5% 0); transform: translate(2px, -1px); }
+            15% { clip-path: inset(0 0 0 0); transform: translate(0); }
         }
 
-        .main-title::before {
-            color: #ff00c1;
-            animation: glitch-anim-1 2s infinite linear alternate-reverse;
-            left: 2px;
-            text-shadow: -2px 0 #ff00c1;
-            opacity: 0.7;
-        }
-
-        .main-title::after {
-            color: var(--accent-blue);
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
-            left: -2px;
-            text-shadow: 2px 0 var(--accent-blue);
-            opacity: 0.7;
-        }
-
-        @keyframes glitch-anim-1 {
-            0% { clip-path: inset(20% 0 30% 0); transform: translate(-5px, -2px); }
-            10% { clip-path: inset(60% 0 10% 0); transform: translate(5px, 2px); }
-            20% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 5px); }
-            30% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -5px); }
-            40% { clip-path: inset(10% 0 70% 0); transform: translate(-5px, 2px); }
-            50% { clip-path: inset(50% 0 20% 0); transform: translate(5px, -2px); }
-            60% { clip-path: inset(30% 0 60% 0); transform: translate(-2px, 2px); }
-            70% { clip-path: inset(70% 0 15% 0); transform: translate(2px, 5px); }
-            80% { clip-path: inset(5% 0 85% 0); transform: translate(-5px, -5px); }
-            90% { clip-path: inset(45% 0 35% 0); transform: translate(5px, 2px); }
-            100% { clip-path: inset(25% 0 55% 0); transform: translate(-2px, -2px); }
-        }
-
-        @keyframes glitch-anim-2 {
-            0% { clip-path: inset(15% 0 45% 0); transform: translate(5px, 2px); }
-            10% { clip-path: inset(55% 0 25% 0); transform: translate(-5px, -2px); }
-            20% { clip-path: inset(35% 0 65% 0); transform: translate(2px, -5px); }
-            30% { clip-path: inset(75% 0 10% 0); transform: translate(-2px, 5px); }
-            40% { clip-path: inset(5% 0 75% 0); transform: translate(5px, -2px); }
-            50% { clip-path: inset(45% 0 35% 0); transform: translate(-5px, 2px); }
-            60% { clip-path: inset(25% 0 55% 0); transform: translate(2px, -2px); }
-            70% { clip-path: inset(65% 0 20% 0); transform: translate(-2px, -5px); }
-            80% { clip-path: inset(10% 0 80% 0); transform: translate(5px, 5px); }
-            90% { clip-path: inset(50% 0 40% 0); transform: translate(-5px, -2px); }
-            100% { clip-path: inset(30% 0 60% 0); transform: translate(2px, 2px); }
-        }
-
-        .hero-content .sub-tagline {
-            font-size: clamp(0.8rem, 1.5vw, 1.2rem);
+        .sub-tagline {
+            font-size: clamp(0.7rem, 2vw, 1.2rem);
             color: var(--text-dim);
-            margin-bottom: 40px;
-            font-weight: 400;
-            letter-spacing: 12px;
-            text-indent: 12px;
-            opacity: 0.8;
-            margin-top: 20px;
+            letter-spacing: 15px;
+            margin-top: 30px;
+            text-indent: 15px;
+            text-transform: uppercase;
         }
 
+        /* --- SEÇÃO SOBRE DLB --- */
+        .about-container {
+            display: flex;
+            align-items: center;
+            gap: 80px;
+            text-align: left;
+            margin-top: 60px;
+            perspective: 1000px; /* Base para o efeito 3D */
+        }
+
+        .about-logo {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Container da logo com efeito magnético via JS */
+        .magnetic-logo-wrap {
+            position: relative;
+            display: inline-block;
+            transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+            will-change: transform;
+        }
+
+        .about-logo img {
+            max-width: 320px;
+            width: 100%;
+            filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.3));
+            pointer-events: none; /* Deixa o wrap lidar com os eventos */
+            transition: filter 0.3s ease;
+        }
+
+        /* Overlay de brilho que segue o rato */
+        .logo-shine {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.2) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .magnetic-logo-wrap:hover .logo-shine {
+            opacity: 1;
+        }
+
+        .about-text {
+            flex: 1.5;
+        }
+
+        .about-text h2 {
+            font-size: 3.5rem;
+            margin-bottom: 24px;
+            background: linear-gradient(to right, #fff, var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .about-text p {
+            font-size: 1.25rem;
+            line-height: 1.9;
+            color: var(--text-dim);
+            margin-bottom: 24px;
+        }
+
+        /* --- BOTÕES --- */
         .cta-button {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 12px;
             background-color: var(--accent-green);
             color: black;
-            padding: 18px 36px;
+            padding: 20px 48px;
             border-radius: 100px;
             text-decoration: none;
             font-weight: 700;
             text-transform: uppercase;
-            transition: var(--transition-fast);
-            box-shadow: 0 0 20px rgba(29, 185, 84, 0.3);
+            margin-top: 40px;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(29, 185, 84, 0.2);
+            border: none;
+            cursor: pointer;
         }
 
         .cta-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 35px rgba(29, 185, 84, 0.6);
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 15px 40px rgba(29, 185, 84, 0.4);
+            background-color: #1ed760;
         }
 
-        /* --- SEÇÃO DJS --- */
-        #djs .grid-djs {
+        /* --- GRID DJS --- */
+        .grid-djs {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-top: 60px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 60px;
+            margin-top: 80px;
+            text-align: left;
         }
 
         .dj-card {
-            background: var(--bg-dark-gray);
-            border: 1px solid #1a1a1a;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition-slow);
-            perspective: 1000px;
+            background: linear-gradient(145deg, #0a0a0a, #111);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 32px;
+            transition: var(--transition-smooth);
+        }
+
+        .dj-card:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-10px);
         }
 
         .dj-image-wrapper {
-            width: 100%;
             aspect-ratio: 4/5;
             overflow: hidden;
             background: #111;
-            margin-bottom: 20px;
+            margin-bottom: 32px;
             filter: grayscale(1);
-            transition: var(--transition-slow);
+            transition: 0.8s ease;
         }
 
-        .dj-card:hover .dj-image-wrapper {
-            filter: grayscale(0);
+        .dj-card:hover .dj-image-wrapper { filter: grayscale(0); }
+        .dj-card img { width: 100%; height: 100%; object-fit: cover; transition: 1.2s ease; }
+        .dj-card:hover img { transform: scale(1.08); }
+
+        /* --- TICKER --- */
+        #mood { 
+            overflow: hidden; 
+            padding: 100px 0; 
+            border-top: 1px solid #1a1a1a; 
+            border-bottom: 1px solid #1a1a1a; 
+            max-width: none;
+        }
+        
+        .ticker-wrapper { 
+            display: flex; 
+            gap: 80px; 
+            animation: ticker 30s linear infinite; 
         }
 
-        .dj-image-wrapper img {
-            width: 100%; height: 100%; object-fit: cover;
-            transition: var(--transition-slow);
+        .ticker-item { 
+            font-size: 7rem; 
+            font-weight: 900; 
+            color: transparent; 
+            -webkit-text-stroke: 1px rgba(255,255,255,0.1);
+            position: relative;
+            white-space: nowrap;
         }
 
-        .dj-card:hover img {
-            transform: scale(1.1);
-        }
+        @keyframes ticker { 100% { transform: translateX(-50%); } }
 
-        .dj-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-
-        .dj-card p {
-            color: var(--text-dim);
-            line-height: 1.6;
-        }
-
-        /* --- SEÇÃO GALERIA --- */
-        #gallery {
-            padding-bottom: 50px;
-        }
-
+        /* --- GALERIA --- */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            grid-auto-rows: 250px;
-            gap: 15px;
+            grid-auto-rows: 280px;
+            gap: 20px;
+            margin-top: 60px;
         }
-
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            filter: brightness(0.6);
-            transition: var(--transition-fast);
-        }
-
-        .gallery-item:hover {
-            filter: brightness(1);
-        }
-
-        .gallery-item img {
-            width: 100%; height: 100%; object-fit: cover;
-        }
-
+        .gallery-item { overflow: hidden; filter: brightness(0.5); transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .gallery-item:hover { filter: brightness(1); }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s ease; }
+        .gallery-item:hover img { transform: scale(1.05); }
         .item-lg { grid-column: span 2; grid-row: span 2; }
-        .item-tall { grid-row: span 2; }
 
         /* --- SEÇÃO SPOTIFY --- */
-        #spotify {
-            background: linear-gradient(180deg, var(--bg-black) 0%, #111 100%);
+        #spotify { padding-bottom: 200px; }
+
+        .spotify-glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 32px;
+            padding: 60px 40px;
+            margin-top: 60px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
         }
 
         .spotify-container {
             width: 100%;
-            max-width: 800px;
-            background: #111;
-            border-radius: 20px;
-            padding: 10px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 20px rgba(29, 185, 84, 0.1);
-            margin-top: 40px;
-        }
-
-        /* --- SOUND & MOOD (LETREIRO) --- */
-        #mood {
+            max-width: 850px;
+            border-radius: 16px;
             overflow: hidden;
-            padding: 60px 0;
-            white-space: nowrap;
-            border-top: 1px solid #1a1a1a;
-            border-bottom: 1px solid #1a1a1a;
+            margin-bottom: 20px;
         }
 
-        .ticker-wrapper {
-            display: flex;
-            gap: 50px;
-            animation: ticker 20s linear infinite;
-        }
-
-        .ticker-item {
-            font-size: 5rem;
-            font-weight: 900;
-            color: transparent;
-            -webkit-text-stroke: 1px var(--text-dim);
-            text-transform: uppercase;
-        }
-
-        @keyframes ticker {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* --- SEÇÃO LANÇAMENTOS --- */
-        .release-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
+        /* --- LANÇAMENTO CLICÁVEL --- */
+        .release-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            max-width: 480px;
+            width: 100%;
+            margin: 80px auto 0;
         }
 
         .release-card {
-            cursor: pointer;
-            text-align: left;
+            transition: var(--transition-smooth);
+            text-align: center;
         }
 
         .release-cover {
             position: relative;
             aspect-ratio: 1;
-            background: #222;
-            margin-bottom: 15px;
             overflow: hidden;
-        }
-
-        .release-cover img {
-            width: 100%; height: 100%; object-fit: cover;
-            transition: var(--transition-slow);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
         }
 
         .play-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.4);
             display: flex;
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transition: var(--transition-fast);
+            transition: 0.4s ease;
         }
 
-        .play-icon {
-            width: 60px; height: 60px;
-            background: var(--accent-green);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transform: scale(0.8);
-            transition: var(--transition-fast);
-        }
+        .release-link:hover .play-overlay { opacity: 1; }
+        .release-link:hover .release-card { transform: scale(1.02); }
 
-        .release-card:hover .play-overlay { opacity: 1; }
-        .release-card:hover .play-icon { transform: scale(1); }
-        .release-card:hover img { transform: scale(1.05); }
-
-        /* --- SEÇÃO SOCIAL --- */
-        #social {
-            text-align: center;
-            padding-top: 150px;
-            padding-bottom: 150px;
-        }
+        /* --- REDES SOCIAIS --- */
+        #social { padding-top: 180px; }
 
         .social-grid {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 30px;
-            margin-top: 60px;
+            margin-top: 80px;
         }
-
         .social-item {
-            width: 120px;
-            height: 120px;
-            background: var(--bg-dark-gray);
-            border: 1px solid #1a1a1a;
+            background: #0a0a0a;
+            padding: 50px 20px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            gap: 18px;
             text-decoration: none;
             color: var(--text-dim);
+            border: 1px solid #1a1a1a;
             border-radius: 20px;
-            transition: var(--transition-fast);
-            gap: 10px;
+            transition: 0.4s ease;
         }
-
-        .social-item span {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .social-item:hover {
-            color: var(--text-main);
-            transform: translateY(-10px);
-            border-color: var(--accent-purple);
-            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2);
-        }
-
-        .social-item.spotify:hover {
-            border-color: var(--accent-green);
-            box-shadow: 0 10px 40px rgba(29, 185, 84, 0.2);
-        }
+        .social-item:hover { color: white; border-color: var(--accent-purple); transform: translateY(-12px); box-shadow: 0 20px 40px rgba(139, 92, 246, 0.1); }
 
         /* --- RODAPÉ --- */
-        footer {
-            padding: 80px 20px;
-            text-align: center;
-            background: black;
-            position: relative;
-            z-index: 2;
-        }
+        footer { padding: 120px 24px; text-align: center; background: black; border-top: 1px solid #111; max-width: none; }
+        .footer-tagline { font-size: 0.95rem; letter-spacing: 6px; color: #444; text-transform: uppercase; }
 
-        .footer-socials {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .footer-socials a {
-            color: var(--text-dim);
-            transition: var(--transition-fast);
-        }
-
-        .footer-socials a:hover {
-            color: var(--text-main);
-            transform: translateY(-5px);
-        }
-
-        .footer-tagline {
-            font-size: 0.9rem;
-            color: #333;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-        }
-
-        /* --- RESPONSIVIDADE --- */
+        /* --- MOBILE --- */
         @media (max-width: 768px) {
             #cursor, #cursor-follower { display: none; }
             body { cursor: auto; }
-            
-            .gallery-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .main-title { font-size: 4rem; }
-            .ticker-item { font-size: 3rem; }
-            .light-blob { width: 85vw; height: 85vw; filter: blur(100px); }
-            
-            .social-grid {
-                gap: 15px;
-            }
-            .social-item {
-                width: 45%;
-                height: 100px;
-            }
+            section { padding: 100px 20px; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 200px; }
+            .main-title { font-size: 5.5rem; }
+            .ticker-item { font-size: 3.5rem; }
+            .about-container { flex-direction: column; text-align: center; gap: 48px; }
+            .about-text h2 { font-size: 2.8rem; }
+            .spotify-glass-card { padding: 40px 20px; }
+            .about-logo img { max-width: 240px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Interface -->
     <div id="cursor"></div>
     <div id="cursor-follower"></div>
     <div class="noise"></div>
 
-    <!-- Rastros de Luz Ambiente -->
+    <!-- Luzes Ambiente -->
     <div class="ambient-lights">
         <div class="light-blob light-1"></div>
         <div class="light-blob light-2"></div>
@@ -581,11 +439,9 @@
     </div>
 
     <!-- Seção Hero -->
-    <section id="hero" class="full-width">
-        <video autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1571266028243-3716f02d2d2e?auto=format&fit=crop&q=80&w=2000">
-            <!-- Em produção, usar vídeo otimizado -->
-        </video>
-        <div class="hero-content reveal">
+    <section id="hero">
+        <video autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1571266028243-3716f02d2d2e?auto=format&fit=crop&q=80&w=2000"></video>
+        <div class="hero-content">
             <h1 class="main-title">DONT<br>LOOK<br>BACK</h1>
             <p class="sub-tagline">O RITMO SEGUE EM FRENTE</p>
             <a href="#spotify" class="cta-button">
@@ -595,152 +451,136 @@
         </div>
     </section>
 
-    <!-- Seção DJs -->
-    <section id="djs">
-        <div class="reveal">
-            <p style="color: var(--accent-purple); font-weight: bold; margin-bottom: 10px;">OS ARTISTAS</p>
-            <h2>A Identidade Sonora</h2>
+    <!-- Seção Sobre DLB -->
+    <section id="about" class="reveal">
+        <div style="margin-bottom: 20px;">
+            <p style="color: var(--accent-purple); font-weight: bold; letter-spacing: 4px;">O CONCEITO</p>
         </div>
-        
-        <div class="grid-djs">
-            <div class="dj-card reveal">
-                <div class="dj-image-wrapper">
-                    <img src="https://images.unsplash.com/photo-1598387993441-a364f854c3e1?auto=format&fit=crop&q=80&w=800" alt="DJ Alex Vogel">
+        <div class="about-container">
+            <div class="about-logo">
+                <!-- Wrapper para o efeito magnético JS -->
+                <div class="magnetic-logo-wrap">
+                    <div class="logo-shine"></div>
+                    <img src="https://i.postimg.cc/QCSNjfBp/DLB-nao-nasceu-pra-contar-historia-Nasceu-do-incomodo-Entre-risadas-drops-e-o-incentivo-de-quem.jpg" alt="Dont Look Back Logo">
                 </div>
-                <h3>ALEX VOGEL</h3>
-                <p>Especialista em texturas profundas e grooves progressivos. Vogel acredita que a pista é o lugar de esquecer o passado e viver o presente.</p>
             </div>
-            <div class="dj-card reveal">
-                <div class="dj-image-wrapper">
-                    <img src="https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?auto=format&fit=crop&q=80&w=800" alt="DJ Lennart">
-                </div>
-                <h3>LENNART</h3>
-                <p>Focado em Tech House de alta energia. Seus sets são construídos para manter a mente focada no próximo drop, nunca no que ficou para trás.</p>
+            <div class="about-text">
+                <h2>DONT LOOK BACK</h2>
+                <p>
+                    DLB é uma dupla brasileira que nasceu em 2025 para contar histórias através da música House. Entre risadas, batidas envolventes e o apoio de quem sempre acreditou em nós, decidimos ir além.
+                </p>
+                <p>
+                    DLB (Don’t Look Back) é mais do que um projeto. É uma jornada pela música House em todas as suas vertentes, dos grooves afro à energia do Tech House. Para nós, é simples: seguir em frente, sentir o momento e nunca olhar para trás. Um único objetivo: conectar-nos com pessoas que vibram na mesma frequência e transformar cada batida em uma lembrança inesquecível.
+                </p>
             </div>
         </div>
     </section>
 
-    <!-- Letreiro de Mood -->
-    <section id="mood" class="full-width">
+    <!-- Seção Artistas -->
+    <section id="djs" class="reveal">
+        <p style="color: var(--accent-purple); font-weight: bold; margin-bottom: 12px; letter-spacing: 3px;">OS ARTISTAS</p>
+        <h2 style="font-size: 3rem;">Identidade Sonora</h2>
+        <div class="grid-djs">
+            <div class="dj-card">
+                <div class="dj-image-wrapper">
+                    <img src="https://i.postimg.cc/T2NKbPNx/image.png" alt="Gabriel">
+                </div>
+                <h3>GABRIEL</h3>
+                <p>Texturas profundas e grooves progressivos. Gabriel acredita que a pista é o lugar de esquecer o passado e viver intensamente o presente.</p>
+            </div>
+            <div class="dj-card">
+                <div class="dj-image-wrapper">
+                    <img src="https://i.postimg.cc/rFppFLqH/Drop-this-shitty-hobbie-Nah-I-ll-drop-the-bass.jpg" alt="Leonardo">
+                </div>
+                <h3>LEONARDO</h3>
+                <p>Energia de alta octanagem. Seus sets de Tech House são construídos para manter a mente focada no próximo drop, sem nunca olhar para o que ficou para trás.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Letreiro Mood -->
+    <section id="mood">
         <div class="ticker-wrapper">
             <div class="ticker-item">Groove Noturno</div>
             <div class="ticker-item">Afro House</div>
-            <div class="ticker-item">Techno</div>
             <div class="ticker-item">DONT LOOK BACK</div>
+            <div class="ticker-item">Som Underground</div>
             <div class="ticker-item">Groove Noturno</div>
-            <div class="ticker-item">House com Alma</div>
-            <div class="ticker-item">Som de Pista</div>
+            <div class="ticker-item">Afro House</div>
             <div class="ticker-item">DONT LOOK BACK</div>
+            <div class="ticker-item">Som Underground</div>
         </div>
     </section>
 
-    <!-- Seção Energia (Galeria) -->
-    <section id="gallery">
-        <div class="reveal" style="margin-bottom: 40px;">
-            <h2>Energia da Pista</h2>
-        </div>
+    <!-- Galeria -->
+    <section id="gallery" class="reveal">
+        <h2 style="font-size: 3rem; margin-bottom: 20px;">Energia da Pista</h2>
         <div class="gallery-grid">
-            <div class="gallery-item item-lg reveal">
-                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=1200" alt="Pista de dança 1">
-            </div>
-            <div class="gallery-item reveal">
-                <img src="https://images.unsplash.com/photo-1514525253344-a8130a43af6d?auto=format&fit=crop&q=80&w=600" alt="Pista de dança 2">
-            </div>
-            <div class="gallery-item tall reveal">
-                <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=600" alt="Pista de dança 3">
-            </div>
-            <div class="gallery-item reveal">
-                <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=600" alt="Pista de dança 4">
-            </div>
-            <div class="gallery-item item-lg reveal">
-                <img src="https://images.unsplash.com/photo-1545128485-c400e7702796?auto=format&fit=crop&q=80&w=1200" alt="Pista de dança 5">
-            </div>
+            <div class="gallery-item item-lg"><img src="https://i.postimg.cc/G22c3FCg/image.png" alt="Pista 1"></div>
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1574391881207-b8bb968664a7?auto=format&fit=crop&q=80&w=800" alt="DJ Detalhe"></div>
+            <div class="gallery-item"><img src="https://i.postimg.cc/DfSXBsXX/image.png" alt="Pista 2"></div>
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=800" alt="Sound System"></div>
+            <div class="gallery-item"><img src="https://i.postimg.cc/Gh1mGsJ8/image.png" alt="Pista 3"></div>
+            <div class="gallery-item item-lg"><img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=800" alt="Luzes Club"></div>
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1542332213-9b5a5a3fad35?auto=format&fit=crop&q=80&w=800" alt="Público"></div>
+            <div class="gallery-item item-lg"><img src="https://i.postimg.cc/L6dnDWSr/image.png" alt="Pista 5"></div>
         </div>
     </section>
 
-    <!-- Seção Spotify -->
-    <section id="spotify">
-        <div class="reveal">
-            <h2>A Trilha Sonora</h2>
-            <p style="color: var(--text-dim); margin-top: 10px;">Acompanhe a evolução do nosso som</p>
-        </div>
-        
-        <div class="spotify-container reveal">
-            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX6J5vUvCpn9g?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
+    <!-- Spotify -->
+    <section id="spotify" class="reveal">
+        <!-- Título Adicionado -->
+        <p style="color: var(--accent-purple); font-weight: bold; margin-bottom: 12px; letter-spacing: 3px;">TRILHA SONORA</p>
+        <h2 style="font-size: 3rem; margin-bottom: 20px;">Ouça agora</h2>
 
-        <div class="reveal" style="margin-top: 40px;">
-            <a href="#" class="cta-button" style="background: transparent; color: white; border: 1px solid var(--accent-green);">
-                <i data-lucide="plus-circle"></i>
-                Seguir no Spotify
+        <div class="spotify-glass-card">
+            <div class="spotify-container">
+                <iframe style="border: none;" src="https://open.spotify.com/intl-pt/artist/6xEGg7KmqbY15F7aicZNiL" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+
+            <a href="https://open.spotify.com/intl-pt/artist/6xEGg7KmqbY15F7aicZNiL" target="_blank" class="cta-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="margin-right: 12px;">
+                    <path d="M12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0ZM17.4854 17.3045C17.2751 17.6496 16.8227 17.7554 16.4776 17.545C13.6547 15.8213 10.1691 15.4388 6.00847 16.3907C5.6133 16.4811 5.21516 16.2312 5.12476 15.8361C5.03436 15.441 5.28424 15.0428 5.67941 14.9524C10.2133 13.9152 14.0759 14.3541 17.245 16.2964C17.5901 16.5068 17.6957 16.9593 17.4854 17.3045ZM18.9557 14.0326C18.6826 14.4782 18.1005 14.6166 17.6549 14.3436C14.4258 12.3601 9.51909 11.7828 5.7034 12.9406C5.20791 13.0912 4.67507 12.8093 4.52441 12.3138C4.37374 11.8183 4.65564 11.2855 5.15114 11.1348C9.49757 9.81498 14.9084 10.4636 18.6447 12.7516C19.0903 13.0247 19.2287 13.6068 18.9557 14.0326ZM19.0838 10.6557C15.2443 8.37494 8.89201 8.16457 5.21634 9.28014C4.62952 9.45828 4.00492 9.12461 3.82678 8.53778C3.64864 7.95096 3.98231 7.32635 4.56914 7.14821C8.78873 5.86725 15.8073 6.10996 20.245 8.74567C20.773 9.05929 20.9439 9.73511 20.6303 10.2631C20.3167 10.7911 19.6408 10.9621 19.1128 10.6484L19.0838 10.6557Z"/>
+                </svg>
+                Acessar Perfil Spotify
             </a>
         </div>
+
+        <!-- Lançamento em Destaque -->
+        <a href="https://open.spotify.com/intl-pt/track/2zjt6F5Ri6ExqTjla99zKE" target="_blank" class="release-link">
+            <h2 style="font-size: 2rem; margin-bottom: 40px; margin-top: 100px;">Último Lançamento</h2>
+            <div class="release-card">
+                <div class="release-cover">
+                    <img src="https://i.postimg.cc/fRP47Gnv/image.png" alt="Perspective Shift" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="play-overlay">
+                        <div class="play-icon"><i data-lucide="play" fill="black" size="48"></i></div>
+                    </div>
+                </div>
+                <h4 style="font-size: 1.8rem; margin-top: 24px;">Perspective Shift</h4>
+                <p style="font-size: 1rem; color: var(--text-dim); margin-top: 8px;">Single Oficial • Ouça agora</p>
+            </div>
+        </a>
     </section>
 
-    <!-- Seção Lançamentos -->
-    <section id="releases">
-        <div class="reveal">
-            <h2>Principais Lançamentos</h2>
-        </div>
-        <div class="release-grid">
-            <div class="release-card reveal">
-                <div class="release-cover">
-                    <img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&q=80&w=400" alt="Capa Release 1">
-                    <div class="play-overlay">
-                        <div class="play-icon"><i data-lucide="play" fill="black"></i></div>
-                    </div>
-                </div>
-                <h4>Perspective Shift</h4>
-                <p style="font-size: 0.8rem; color: var(--text-dim);">Single • 2024</p>
-            </div>
-            <div class="release-card reveal">
-                <div class="release-cover">
-                    <img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=400" alt="Capa Release 2">
-                    <div class="play-overlay">
-                        <div class="play-icon"><i data-lucide="play" fill="black"></i></div>
-                    </div>
-                </div>
-                <h4>No Regrets</h4>
-                <p style="font-size: 0.8rem; color: var(--text-dim);">EP • 2023</p>
-            </div>
-            <div class="release-card reveal">
-                <div class="release-cover">
-                    <img src="https://images.unsplash.com/photo-1459749411177-042180ce673c?auto=format&fit=crop&q=80&w=400" alt="Capa Release 3">
-                    <div class="play-overlay">
-                        <div class="play-icon"><i data-lucide="play" fill="black"></i></div>
-                    </div>
-                </div>
-                <h4>Moving Forward Mix</h4>
-                <p style="font-size: 0.8rem; color: var(--text-dim);">DJ Set • 2024</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Seção Social Final -->
-    <section id="social">
-        <div class="reveal">
-            <p style="color: var(--accent-purple); font-weight: bold; margin-bottom: 10px;">CONECTE-SE</p>
-            <h2>Siga o Movimento</h2>
-            <p style="color: var(--text-dim); margin-top: 15px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                Fique por dentro das gigs, novos lançamentos e o lifestyle underground da dupla.
-            </p>
-        </div>
-
+    <!-- Redes Sociais -->
+    <section id="social" class="reveal">
+        <p style="color: var(--accent-purple); font-weight: bold; letter-spacing: 4px;">CONECTE-SE</p>
+        <h2 style="font-size: 3rem;">Siga o Movimento</h2>
         <div class="social-grid">
-            <a href="#" class="social-item reveal">
-                <i data-lucide="instagram" size="32"></i>
+            <a href="#" class="social-item">
+                <i data-lucide="instagram" size="36"></i>
                 <span>Instagram</span>
             </a>
-            <a href="#" class="social-item reveal">
-                <i data-lucide="music-2" size="32"></i>
+            <a href="#" class="social-item">
+                <i data-lucide="music-2" size="36"></i>
                 <span>TikTok</span>
             </a>
-            <a href="#" class="social-item spotify reveal">
-                <i data-lucide="play" size="32"></i>
+            <a href="#" class="social-item">
+                <i data-lucide="play" size="36"></i>
                 <span>Spotify</span>
             </a>
-            <a href="#" class="social-item reveal">
-                <i data-lucide="cloud" size="32"></i>
+            <a href="#" class="social-item">
+                <i data-lucide="cloud" size="36"></i>
                 <span>SoundCloud</span>
             </a>
         </div>
@@ -749,51 +589,80 @@
     <!-- Rodapé -->
     <footer>
         <p class="footer-tagline">O RITMO SEGUE EM FRENTE. NÃO OLHE PARA TRÁS.</p>
-        <p style="font-size: 0.7rem; color: #222; margin-top: 20px;">© 2024 DONT LOOK BACK. TODOS OS DIREITOS RESERVADOS.</p>
+        <p style="font-size: 0.75rem; color: #222; margin-top: 40px; letter-spacing: 2px;">© 2024 DONT LOOK BACK. TODOS OS DIREITOS RESERVADOS.</p>
     </footer>
 
     <script>
-        // Inicializar ícones Lucide
         lucide.createIcons();
 
-        // Lógica do Cursor Personalizado
+        // Cursor Personalizado
         const cursor = document.getElementById('cursor');
         const follower = document.getElementById('cursor-follower');
+        let mouseX = 0, mouseY = 0, ballX = 0, ballY = 0;
 
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX;
-            const y = e.clientY;
-            cursor.style.transform = `translate(${x - 10}px, ${y - 10}px)`;
-            // Atraso leve para o seguidor criar efeito orgânico
-            setTimeout(() => {
-                follower.style.transform = `translate(${x - 20}px, ${y - 20}px)`;
-            }, 50);
+        document.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.transform = `translate3d(${mouseX - 10}px, ${mouseY - 10}px, 0)`;
         });
 
-        // Intersection Observer para animações de revelação (Reveal)
-        const revealCallback = (entries, observer) => {
+        function updateCursor() {
+            ballX += (mouseX - ballX) * 0.15;
+            ballY += (mouseY - ballY) * 0.15;
+            follower.style.transform = `translate3d(${ballX - 20}px, ${ballY - 20}px, 0)`;
+            requestAnimationFrame(updateCursor);
+        }
+        updateCursor();
+
+        // NOVO: Efeito Magnético 3D na Logo do Conceito
+        const magneticLogoWrap = document.querySelector('.magnetic-logo-wrap');
+        const logoShine = document.querySelector('.logo-shine');
+
+        if (magneticLogoWrap) {
+            magneticLogoWrap.addEventListener('mousemove', (e) => {
+                const rect = magneticLogoWrap.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Calcula posição relativa para o brilho (CSS Variables)
+                logoShine.style.setProperty('--x', `${(x / rect.width) * 100}%`);
+                logoShine.style.setProperty('--y', `${(y / rect.height) * 100}%`);
+
+                // Calcula inclinação baseada na posição do cursor
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const tiltX = (y - centerY) / 10;
+                const tiltY = (centerX - x) / 10;
+                
+                // Aplica transformações combinadas (Magnetic Pull + 3D Tilt)
+                magneticLogoWrap.style.transform = `translate3d(${(x - centerX) / 15}px, ${(y - centerY) / 15}px, 0) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+            });
+
+            magneticLogoWrap.addEventListener('mouseleave', () => {
+                // Volta ao estado original suavemente
+                magneticLogoWrap.style.transform = `translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg)`;
+            });
+        }
+
+        // Reveal no Scroll
+        const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('active');
                 }
             });
-        };
+        }, { threshold: 0.12 });
 
-        const observer = new IntersectionObserver(revealCallback, {
-            threshold: 0.1
-        });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-        // Efeito Tilt 3D nos Cards de DJ (Perspectiva com o mouse)
-        document.querySelectorAll('.dj-card').forEach(card => {
+        // Tilt 3D nos Cards (DJs e Lançamento)
+        document.querySelectorAll('.dj-card, .release-card').forEach(card => {
             card.addEventListener('mousemove', e => {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = (y - centerY) / 10;
-                const rotateY = (centerX - x) / 10;
+                const rotateX = (y - rect.height / 2) / 12;
+                const rotateY = (rect.width / 2 - x) / 12;
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
             });
             card.addEventListener('mouseleave', () => {
@@ -801,23 +670,23 @@
             });
         });
 
-        // Efeito "Dont Look Back" no Scroll (Zoom e Opacidade na Hero)
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const heroContent = document.querySelector('.hero-content');
-            const heroVideo = document.querySelector('#hero video');
-            
-            if (heroContent) {
-                // O conteúdo escala e desvanece conforme o usuário "avança" (scroll down)
-                const scale = 1 + (scrolled * 0.002);
-                const opacity = 1 - (scrolled * 0.003);
-                heroContent.style.transform = `scale(${scale})`;
-                heroContent.style.opacity = opacity;
-            }
+        // Parallax na Hero
+        const heroContent = document.querySelector('.hero-content');
+        const heroVideo = document.querySelector('#hero video');
 
-            if (heroVideo) {
-                // Efeito de parallax e zoom leve no vídeo de fundo
-                heroVideo.style.transform = `translate(-50%, calc(-50% + ${scrolled * 0.4}px)) scale(${1 + scrolled * 0.0005})`;
+        window.addEventListener('scroll', () => {
+            const scrollY = window.pageYOffset;
+            const vh = window.innerHeight;
+
+            if (scrollY < vh) {
+                const scale = 1 + (scrollY * 0.001);
+                const opacity = 1 - (scrollY * 0.002);
+                heroContent.style.transform = `translate3d(0, 0, 0) scale(${scale})`;
+                heroContent.style.opacity = opacity;
+                
+                if (heroVideo) {
+                    heroVideo.style.transform = `translate3d(-50%, calc(-50% + ${scrollY * 0.35}px), 0)`;
+                }
             }
         });
     </script>
